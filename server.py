@@ -90,11 +90,21 @@ def handle_dialog(req, res):
                                                          'покупаю',
                                                          'хорошо']
     ]):
-        # Пользователь согласился, прощаемся.
-        res['response']['text'] = 'Слона можно найти на Яндекс.Маркете!'
-        res['response']['end_session'] = True
-        return
+        # Пользователь согласился.
+        res['response']['text'] = 'Слона можно найти на Яндекс.Маркете! \n А теперь купи кролика!'
 
+        if any([x in req['request']['original_utterance'].lower() for x in
+                                                        ['ладно',
+                                                         'куплю',
+                                                         'покупаю',
+                                                         'хорошо']
+        ]):
+            res['response']['text'] = 'Кролика тоже можно наайти на Яндекс.Маркете!'
+            res['response']['end_session'] = True
+            return
+        res['response']['text'] = \
+            f"Все говорят '{req['request']['original_utterance']}', а ты купи кролика!"
+        res['response']['buttons'] = get_suggests(user_id)
     # Если нет, то убеждаем его купить слона!
     res['response']['text'] = \
         f"Все говорят '{req['request']['original_utterance']}', а ты купи слона!"
